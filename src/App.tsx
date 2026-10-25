@@ -1,12 +1,44 @@
-import { storeConfig } from './config/store'
+import { BrowserRouter, Link, Route, Routes } from 'react-router'
+import { Layout } from './app/Layout'
+import { StatusMessage } from './components/ui/StatusMessage'
+import { CartPage } from './features/cart/CartPage'
+import { CartProvider } from './features/cart/CartProvider'
+import { CatalogPage } from './features/catalog/CatalogPage'
+import { ProductPage } from './features/catalog/ProductPage'
+import { StoreSettingsProvider } from './features/settings/StoreSettingsProvider'
+
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<CatalogPage />} />
+        <Route path="products/:slug" element={<ProductPage />} />
+        <Route path="cart" element={<CartPage />} />
+        <Route
+          path="*"
+          element={
+            <StatusMessage>
+              Page not found.{' '}
+              <Link to="/" className="font-medium underline">
+                Go to the catalogue
+              </Link>
+            </StatusMessage>
+          }
+        />
+      </Route>
+    </Routes>
+  )
+}
 
 function App() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-4 py-12">
-      <h1 className="text-center text-3xl font-semibold tracking-tight text-slate-900">
-        {storeConfig.storeName}
-      </h1>
-    </main>
+    <StoreSettingsProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </CartProvider>
+    </StoreSettingsProvider>
   )
 }
 
